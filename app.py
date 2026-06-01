@@ -1,50 +1,53 @@
 import streamlit as st
 import pandas as pd
 
-st.title("Student Marks Analyzer with Visualization")
+# Title
+st.title("Student Marks Analyzer")
 
-name = st.text_input("Enter Student Name")
+# Input Student Details
+student_name = st.text_input("Enter Student Name")
 
-m1 = st.number_input("Enter marks for Subject 1", min_value=0, max_value=100)
-m2 = st.number_input("Enter marks for Subject 2", min_value=0, max_value=100)
-m3 = st.number_input("Enter marks for Subject 3", min_value=0, max_value=100)
+subject1 = st.number_input("Marks in Subject 1", min_value=0, max_value=100)
+subject2 = st.number_input("Marks in Subject 2", min_value=0, max_value=100)
+subject3 = st.number_input("Marks in Subject 3", min_value=0, max_value=100)
 
-if st.button("Calculate"):
-    total = m1 + m2 + m3
-    average = total / 3
+# Calculate Button
+if st.button("Analyze Marks"):
 
-    if average >= 90:
+    # Calculate Total and Average
+    total_marks = subject1 + subject2 + subject3
+    average_marks = total_marks / 3
+
+    # Determine Grade
+    if average_marks >= 90:
         grade = "A"
-    elif average >= 75:
+    elif average_marks >= 75:
         grade = "B"
-    elif average >= 50:
+    elif average_marks >= 50:
         grade = "C"
     else:
         grade = "Fail"
 
     # Display Results
-    st.subheader("Results")
-    st.write(f"Student Name: {name}")
-    st.write(f"Total Marks: {total}")
-    st.write(f"Average Marks: {average:.2f}")
-    st.write(f"Grade: {grade}")
+    st.header("Student Report")
+    st.write("Name:", student_name)
+    st.write("Total Marks:", total_marks)
+    st.write("Average Marks:", round(average_marks, 2))
+    st.write("Grade:", grade)
 
-    # Create Data for Visualization
-    data = {
-        "Subjects": ["Subject 1", "Subject 2", "Subject 3"],
-        "Marks": [m1, m2, m3]
-    }
+    # Create DataFrame
+    marks_data = pd.DataFrame({
+        "Subject": ["Subject 1", "Subject 2", "Subject 3"],
+        "Marks": [subject1, subject2, subject3]
+    })
 
-    df = pd.DataFrame(data)
+    # Visualization
+    st.subheader("Bar Chart")
+    st.bar_chart(marks_data.set_index("Subject"))
 
-    # Bar Chart
-    st.subheader("Marks Comparison (Bar Chart)")
-    st.bar_chart(df.set_index("Subjects"))
+    st.subheader("Line Chart")
+    st.line_chart(marks_data.set_index("Subject"))
 
-    # Line Chart
-    st.subheader("Marks Trend (Line Chart)")
-    st.line_chart(df.set_index("Subjects"))
-
-    # Table View
-    st.subheader("Marks Table")
-    st.dataframe(df)
+    # Display Table
+    st.subheader("Marks Summary")
+    st.dataframe(marks_data)
